@@ -4,16 +4,8 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
+  --background-start-rgb: 255, 255, 255;
   --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
 }
 
 body {
@@ -29,5 +21,49 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+.no-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scroll {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.underline-offset {
+  position: relative;
+}
+
+.underline-offset::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  height: 2px;
+  width: 140%;
+  transform: translateX(-50%);
+  background-color: currentColor;
+}
+
+#logo-svg path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+}
+
+.animate > div {
+  animation: diagonal-slide 4s infinite linear;
+  animation-delay: calc(var(--i) * 0.4s);
+}
+
+@keyframes diagonal-slide {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(0, -64px);
   }
 }
