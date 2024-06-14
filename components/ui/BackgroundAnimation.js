@@ -9,9 +9,9 @@ const BackgroundAnimation = () => {
 
   const currentChain =
     pathname.split("/")[1] === "login"
-      ? "/tokens/link-logo.svg"
+      ? "/tokens/frax-logo.svg"
       : pathname.split("/")[1] === "register"
-      ? "/tokens/link-logo.svg"
+      ? "/tokens/frax-logo.svg"
       : useSelector((state) => state.chain.currentChain.logo);
 
   return (

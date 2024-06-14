@@ -7,6 +7,8 @@ import gasSlice from "@/redux/slice/gasSlice";
 import selectorSlice from "@/redux/slice/selectorSlice";
 import proofSlice from "@/redux/slice/proofSlice";
 import signUpSlice from "@/redux/slice/signUpSlice";
+import claimSlice from "@/redux/slice/claimSlice";
+import modalSlice from "@/redux/slice/modalSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +18,8 @@ export const store = configureStore({
     selector: selectorSlice,
     proof: proofSlice,
     signup: signUpSlice,
+    claim: claimSlice,
+    modal: modalSlice,
   },
 
   middleware: (getDefaultMiddleware) =>
