@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { MoveRight } from "lucide-react";
 
-const LoginInfo = () => {
+const SignUpInfo = () => {
   return (
     <section className="flex-1 flex justify-between flex-col">
       <div className="rounded-2xl p-10 text-center space-y-5">
@@ -14,15 +14,15 @@ const LoginInfo = () => {
             <div className="absolute w-8/12 h-6 bg-red-100 bottom-1 rounded-full z-0 left-1/2 -translate-x-1/2"></div>
             <span className="relative z-10">FORTRESS</span>
           </div>
-          {/* <span>security</span> */}
         </h2>
       </div>
 
       <div className="text-center mb-10">
-        <p className="text-lg text-gray-600 mb-1">Don't have account?</p>
+        <p className="text-lg text-gray-600 mb-1">Already have an account?</p>
 
-        <Link href="/register" className="text-sm underline-offset font-medium">
-          Create account <MoveRight size={16} className="inline-block ml-1" />
+        <Link href="/login" className="text-sm underline-offset font-medium">
+          Login Now
+          <MoveRight size={16} className="inline-block ml-1" />
         </Link>
       </div>
 
@@ -33,4 +33,4 @@ const LoginInfo = () => {
   );
 };
 
-export default LoginInfo;
+export default SignUpInfo;

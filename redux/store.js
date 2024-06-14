@@ -6,6 +6,7 @@ import chainSlice from "@/redux/slice/chainSlice";
 import gasSlice from "@/redux/slice/gasSlice";
 import selectorSlice from "@/redux/slice/selectorSlice";
 import proofSlice from "@/redux/slice/proofSlice";
+import signUpSlice from "@/redux/slice/signUpSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     gas: gasSlice,
     selector: selectorSlice,
     proof: proofSlice,
+    signup: signUpSlice,
   },
 
   middleware: (getDefaultMiddleware) =>
