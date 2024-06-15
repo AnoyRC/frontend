@@ -2,42 +2,42 @@
 
 import TokenSelector from "@/components/ui/TokenSelector";
 import useWallet from "@/hooks/useWallet";
-import {
-  setGasAmount,
-  setGasless,
-  setPasskey,
-  setPassword,
-  setStep,
-} from "@/redux/slice/recoverySlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@material-tailwind/react";
 import { Check, ChevronLeft, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import {
+  setEmail,
+  setGasAmount,
+  setGasless,
+  setRecoveryHash,
+  setStep,
+} from "@/redux/slice/changeSlice";
+import { useEffect, useState } from "react";
 import {
   setRecoveryProof,
   toggleRecoveryDrawer,
 } from "@/redux/slice/proofSlice";
-import useRecovery from "@/hooks/useRecovery";
+import useChange from "@/hooks/useChange";
 import { toast } from "sonner";
 
 export default function Step2() {
-  const gasless = useSelector((state) => state.recovery.gasless);
+  const gasless = useSelector((state) => state.change.gasless);
   const dispatch = useDispatch();
   const router = useRouter();
   const { getDomain } = useWallet();
+  const [, gasToken] = useSelector((state) => state.selector.token);
+  const gasAmount = useSelector((state) => state.change.gasAmount);
   const domain = getDomain();
   const recoveryProof = useSelector((state) => state.proof.recoveryProof);
-  const email = useSelector((state) => state.proof.email);
-  const [, gasToken] = useSelector((state) => state.selector.token);
+  const email = useSelector((state) => state.change.email);
   const [isLoading, setIsLoading] = useState(false);
-  const gasAmount = useSelector((state) => state.recovery.gasAmount);
-  const { estimateGas, executeRecovery } = useRecovery();
   const walletAddress = useSelector((state) => state.user.walletAddress);
   const currentChain = useSelector((state) => state.chain.currentChain);
-  const passkey = useSelector((state) => state.recovery.passkey);
-  const password = useSelector((state) => state.recovery.password);
+  const { estimateGas, changeRecovery } = useChange();
+  const type = useSelector((state) => state.proof.type);
+  const recoveryHash = useSelector((state) => state.change.recoveryHash);
 
   var timeout = null;
 
@@ -49,14 +49,14 @@ export default function Step2() {
   const handleExecute = async () => {
     toast.promise(
       () =>
-        executeRecovery(
+        changeRecovery(
           currentChain,
           gasToken,
-          passkey,
-          password,
+          type,
           email,
-          walletAddress,
+          recoveryHash,
           recoveryProof,
+          walletAddress,
           domain,
           gasless
         ),
@@ -67,8 +67,8 @@ export default function Step2() {
 
     dispatch(setRecoveryProof(null));
     dispatch(setStep(0));
-    dispatch(setPasskey(null));
-    dispatch(setPassword(""));
+    dispatch(setRecoveryHash(null));
+    dispatch(setEmail(null));
     router.push("/settings?domain=" + domain);
   };
 
@@ -96,11 +96,12 @@ export default function Step2() {
       <div className="bg-gray-300 w-full rounded-lg flex flex-col gap-2 p-4">
         <div className="flex justify-between items-center w-full">
           <p className="text-sm font-base text-gray-600">Operation</p>
-          <p className="text-xs font-semibold text-gray-800">Recovery</p>
+          <p className="text-xs font-semibold text-gray-800">Change Recovery</p>
         </div>
         <div className="flex justify-between items-center w-full">
           <p className="text-sm font-base text-gray-600">Network Fees</p>
           <div className="text-xs font-semibold text-gray-800 flex items-center">
+            {" "}
             {isLoading ? (
               <Loader2 size={14} className="animate-spin mr-2" />
             ) : gasAmount ? (
