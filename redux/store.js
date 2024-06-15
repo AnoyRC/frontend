@@ -10,6 +10,7 @@ import signUpSlice from "@/redux/slice/signUpSlice";
 import claimSlice from "@/redux/slice/claimSlice";
 import modalSlice from "@/redux/slice/modalSlice";
 import transferSlice from "@/redux/slice/transferSlice";
+import recoverySlice from "@/redux/slice/recoverySlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     claim: claimSlice,
     modal: modalSlice,
     transfer: transferSlice,
+    recovery: recoverySlice,
   },
 
   middleware: (getDefaultMiddleware) =>
