@@ -28,8 +28,8 @@ export default function Step1() {
         <p className="text-lg font-medium z-20">About</p>
         <p className="text-xs z-20 relative w-[85%] font-light">
           Fusion Gas Credits are used to pay for transactions on any network
-          supported by Fusion. The credits are stored safely in Fusion
-          sub-chain, powered by AvaCloud.
+          supported by Fusion. The credits are Zk-powered ERC-20 Tokens deployed
+          on Fraxtal.
         </p>
 
         <Image
