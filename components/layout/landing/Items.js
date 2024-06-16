@@ -1,0 +1,103 @@
+const items = [
+  {
+    type: "image",
+    image: "/tokens/frax-logo.svg",
+    height: 100,
+    width: 125,
+    top: "40%",
+    left: "35%",
+  },
+  {
+    type: "image",
+    image: "/tokens/frxeth-logo.svg",
+    height: 100,
+    width: 105,
+    top: "30%",
+    right: "30%",
+  },
+  {
+    type: "image",
+    image: "/tokens/op-logo.svg",
+    height: 100,
+    width: 105,
+    bottom: "30%",
+    right: "30%",
+  },
+  {
+    type: "image",
+    image: "/tokens/usdc-logo.svg",
+    height: 100,
+    width: 105,
+    bottom: "30%",
+    left: "30%",
+  },
+  {
+    type: "text",
+    text: "Fraxtal",
+    bottom: "25%",
+    left: "55%",
+  },
+  {
+    type: "text",
+    text: "Smart Wallet",
+    top: "30%",
+    left: "42%",
+  },
+
+  {
+    type: "image",
+    image: "/tokens/sfrxeth-logo.svg",
+    height: 100,
+    width: 110,
+    top: "50%",
+    left: "10%",
+  },
+  {
+    type: "text",
+    text: "Multi-Chain",
+    top: "10%",
+    left: "10%",
+  },
+  {
+    type: "text",
+    text: "on-chain",
+    bottom: "15%",
+    left: "10%",
+  },
+  {
+    type: "text",
+    text: "Hackathon",
+    bottom: "18%",
+    right: "10%",
+  },
+  {
+    type: "image",
+    image: "/FusionGas.png",
+    height: 100,
+    width: 200,
+    top: "40%",
+    right: "5%",
+  },
+  {
+    type: "text",
+    text: "Domains",
+    top: "18%",
+    right: "10%",
+  },
+  {
+    type: "text",
+    text: "zk",
+    bottom: "8%",
+    right: "50%",
+  },
+  {
+    type: "image",
+    image: "/LockIcon.png",
+    height: 100,
+    width: 150,
+    top: "8%",
+    right: "40%",
+  },
+];
+
+export default items;
