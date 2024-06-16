@@ -14,6 +14,7 @@ export default function WalletProvider({ children }) {
     getGasUpdates,
     loadPublicStorage,
     loadTransactions,
+    destroySocket,
   } = useWallet();
   const currentChain = useSelector((state) => state.chain.currentChain);
   const walletAddress = useSelector((state) => state.user.walletAddress);
@@ -33,6 +34,7 @@ export default function WalletProvider({ children }) {
     let timeout;
 
     clearTimeout(timeout);
+    destroySocket();
 
     if (currentChain && walletAddress) {
       timeout = setTimeout(() => {
@@ -42,10 +44,12 @@ export default function WalletProvider({ children }) {
         loadTransactions(abortController.signal);
       }, 1000);
     } else {
+      destroySocket();
       clearTimeout(timeout);
     }
 
     return () => {
+      destroySocket();
       abortController.abort();
       clearTimeout(timeout);
     };

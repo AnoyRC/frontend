@@ -5,7 +5,6 @@ const claimSlice = createSlice({
 
   initialState: {
     step: 0,
-    isFinalizing: false,
     claimDrawer: false,
     deployProof: null,
     isLoading: false,
@@ -15,9 +14,6 @@ const claimSlice = createSlice({
   reducers: {
     setStep: (state, action) => {
       state.step = action.payload;
-    },
-    setIsFinalizing: (state, action) => {
-      state.isFinalizing = action.payload;
     },
     toggleClaimDrawer: (state) => {
       state.claimDrawer = !state.claimDrawer;
@@ -36,7 +32,6 @@ const claimSlice = createSlice({
 
 export const {
   setStep,
-  setIsFinalizing,
   toggleClaimDrawer,
   setDeployProof,
   setIsLoading,

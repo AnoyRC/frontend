@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { ethers } from "ethers";
 import {
   setDeployProof,
-  setIsFinalizing,
   setIsLoading,
   setIsRequesting,
   setStep,
@@ -24,7 +23,12 @@ import { setWalletAddresses } from "@/redux/slice/userSlice";
 
 export default function useClaim() {
   const dispatch = useDispatch();
-  const { getDomain, loadAddresses, switchChain } = useWallet();
+  const {
+    getDomain,
+    loadAddresses,
+    initializeProofWallet,
+    getNonce,
+  } = useWallet();
   const { login } = useWebAuthn();
   const { password_prove } = useCircuit();
   const walletAddress = useSelector((state) => state.user.walletAddress);
@@ -41,6 +45,8 @@ export default function useClaim() {
 
       const domain = getDomain();
 
+      const wallet = await initializeProofWallet();
+
       if (!domain) {
         toast.error("Invalid Domain");
         return;
@@ -48,9 +54,9 @@ export default function useClaim() {
 
       const id = await login();
 
-      const nonce = 9999;
+      const nonce = Number(await getNonce());
 
-      const proof = await password_prove(id, nonce, walletAddress);
+      const proof = await password_prove(id, nonce, wallet.address);
 
       if (!proof) {
         toast.error("Error Generating Proof");
@@ -74,13 +80,15 @@ export default function useClaim() {
 
       const domain = getDomain();
 
+      const wallet = await initializeProofWallet();
+
       if (!domain) {
         toast.error("Invalid Domain");
         return;
       }
-      const nonce = 9999;
+      const nonce = Number(await getNonce());
 
-      const proof = await password_prove(password, nonce, walletAddress);
+      const proof = await password_prove(password, nonce, wallet.address);
 
       if (!proof) {
         toast.error("Error Generating Proof");
@@ -105,6 +113,8 @@ export default function useClaim() {
       setMessage("Requesting Deployment");
 
       const baseChain = config.find((chain) => chain.isBase);
+
+      const wallet = await initializeProofWallet();
 
       const fusionAddress = walletAddresses.find(
         (address) => address.chainId === baseChain.chainId
@@ -154,9 +164,7 @@ export default function useClaim() {
       );
 
       const initializer = fusion.interface.encodeFunctionData("setupFusion", [
-        ethers.utils.keccak256(
-          ethers.utils.toUtf8Bytes(domain?.toLowerCase() + ".fusion.id")
-        ),
+        ethers.utils.keccak256(ethers.utils.toUtf8Bytes(domain?.toLowerCase())),
         selectedChain.addresses.PasswordVerifier,
         selectedChain.addresses.SignatureVerifier,
         selectedChain.addresses.FusionForwarder,
@@ -171,18 +179,25 @@ export default function useClaim() {
         proof: deployProof,
         type: "password",
         initializer,
+        address: wallet.address,
       };
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/deploy/request/${selectedChain.chainId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/deploy/${selectedChain.chainId}`,
         {
           chainDeployRequest,
         }
       );
 
       if (response.data.success) {
-        toast.success("Successfully Requested Deployment");
-        await checkForFulfillment(selectedChain, setMessage);
+        let walletAddresses = await loadAddresses(domain);
+        dispatch(setWalletAddresses(walletAddresses));
+        toast.success(`Successfully Deployed to ${selectedChain.chainName}`);
+        setMessage("Request Deployment");
+        dispatch(setIsRequesting(false));
+        dispatch(setStep(2));
+        dispatch(setDeployProof(null));
+        fireMultiple();
       } else {
         toast.error("Failed to deploy to chain");
         console.log(response.data.error);
@@ -199,109 +214,9 @@ export default function useClaim() {
     }
   };
 
-  const checkForFulfillment = async (selectedChain, setMessage) => {
-    try {
-      setMessage("Checking for Fulfillment");
-
-      const wsProvider = new ethers.providers.WebSocketProvider(
-        selectedChain.wsUrl
-      );
-
-      const fusionFactory = new ethers.Contract(
-        selectedChain.addresses.FusionProxyFactory,
-        FusionFactoryABI,
-        wsProvider
-      );
-
-      const Domain = getDomain() + ".fusion.id";
-
-      fusionFactory.on("DomainRequestFulfilled", async () => {
-        const fullfilledRequests = await fusionFactory.requests(Domain);
-
-        if (fullfilledRequests.fulfilled) {
-          toast.success("Request Verified Successfully");
-          setMessage("Request Deployment");
-          dispatch(setIsRequesting(false));
-          dispatch(setStep(2));
-          dispatch(setDeployProof(null));
-          fireMultiple();
-        }
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error("Error Checking for Deployment");
-      setMessage("Request Deployment");
-      dispatch(setIsRequesting(false));
-    }
-  };
-
-  const checkFinalized = async (chainId) => {
-    try {
-      const selectedChain = config.find(
-        (chain) => chain.chainId === Number(chainId)
-      );
-
-      const provider = new ethers.providers.JsonRpcProvider(
-        selectedChain.rpcUrl
-      );
-
-      const factory = new ethers.Contract(
-        selectedChain.addresses.FusionProxyFactory,
-        FusionFactoryABI,
-        provider
-      );
-
-      const domain = getDomain() + ".fusion.id";
-
-      const request = await factory.requests(domain);
-
-      if (request.fulfilled) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  };
-
-  const finalizeDeployment = async (selectedChain) => {
-    try {
-      dispatch(setIsFinalizing(true));
-
-      const domain = getDomain();
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/deploy/finalize/${
-          selectedChain.chainId
-        }/${domain + ".fusion.id"}`
-      );
-
-      if (response.data.success) {
-        toast.success("Successfully Finalized Deployment");
-        let walletAddresses = await loadAddresses(domain + ".fusion.id");
-        dispatch(setWalletAddresses(walletAddresses));
-
-        dispatch(setIsFinalizing(false));
-        dispatch(setStep(0));
-        fireMultiple();
-        router.push(`/dashboard?domain=${domain}`);
-      } else {
-        toast.error("Failed to finalize deployment");
-        console.log(response.data.error);
-        dispatch(setIsFinalizing(false));
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Error Finalizing Deployment");
-    }
-  };
-
   return {
     generatePasskeyProof,
     generatePasswordProof,
     requestDeployment,
-    checkFinalized,
-    finalizeDeployment,
   };
 }

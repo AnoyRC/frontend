@@ -42,6 +42,50 @@ const config = [
       },
     ],
   },
+  {
+    chainId: 11155420,
+    chainName: "Optimism",
+    isBase: false,
+    rpcUrl: "https://optimism-sepolia.drpc.org",
+    wsUrl:
+      "wss://optimism-sepolia.infura.io/ws/v3/f33dc6bd82054b91aada84a3ad016c64",
+    explorerUrl: "https://sepolia-optimism.etherscan.io",
+    faucetUrl: "https://faucets.chain.link/optimism-sepolia",
+    convert_id: "2781",
+    id: "1027",
+    symbol: "ETH",
+    logo: "/tokens/op-logo.svg",
+    addresses: {
+      Fusion: "0x9ef56D0d3E6b1815564FD38305983ef58b40a832",
+      FusionForwarder: "0x4b9225B31e42C424922A592295A5D29B730bfb2A",
+      FactoryForwarder: "0x564c96693F4a50a4B49bD02d5a54CDE6a7E6050D",
+      FusionProxyFactory: "0x8e8379187B999e7028C86F58945740F723D63654",
+      FusionVault: "0x2C14f5E9e0FE99af55c97B5FcBC3D61FDb5f4115",
+      PasswordVerifier: "0xfeE8519dA4D85ECa10d77735dcf1b89F44dE03b9",
+      SignatureVerifier: "0xea8A2dD688F021A2d2FdA73124235e673E7A4BFc",
+      FusionGasTank: "0x51781cc1439BD05a85185C8c8CEc979b263236e3",
+    },
+    tokens: [
+      {
+        name: "ETH",
+        symbol: "ETH",
+        address: null,
+        convert_id: "1027",
+        usd_id: "2781",
+        decimals: 18,
+        logo: "/tokens/eth-logo.svg",
+      },
+      {
+        name: "USDC",
+        symbol: "USDC",
+        address: "0x5fd84259d66Cd46123540766Be93DFE6D43130D7",
+        convert_id: "3408",
+        usd_id: "2781",
+        decimals: 6,
+        logo: "/tokens/usdc-logo.svg",
+      },
+    ],
+  },
 ];
 
 export default config;

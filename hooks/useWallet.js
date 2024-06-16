@@ -16,6 +16,7 @@ import {
   setTokenConversionData,
   setWalletAddress,
   setWalletAddresses,
+  setWsProvider,
 } from "@/redux/slice/userSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -31,11 +32,11 @@ export default function useWallet() {
   const currentChain = useSelector((state) => state.chain.currentChain);
   const walletAddress = useSelector((state) => state.user.walletAddress);
   const walletAddresses = useSelector((state) => state.user.walletAddresses);
-  const [wsProvider, setWsProvider] = useState(null);
+  const wsProvider = useSelector((state) => state.user.wsProvider);
   const router = useRouter();
   const [timeout, setTimeout] = useState(null);
   const wallet = useSelector((state) => state.proof.wallet);
-  const isRequesting = true;
+  const isRequesting = useSelector((state) => state.claim.isRequesting);
 
   const getDomain = () => {
     const domain = searchParams.get("domain");
@@ -185,7 +186,7 @@ export default function useWallet() {
       currentChain.wsUrl
     );
 
-    setWsProvider(WsProvider);
+    dispatch(setWsProvider(WsProvider));
 
     WsProvider.on("block", async () => {
       const newBalance = Number(await WsProvider.getBalance(walletAddress));
@@ -285,6 +286,12 @@ export default function useWallet() {
     let conversionData = [...tokensConversion];
 
     dispatch(setTokenConversionData(conversionData));
+  };
+
+  const destroySocket = () => {
+    if (wsProvider) {
+      wsProvider.destroy();
+    }
   };
 
   const loadGasCredit = async (domain) => {
@@ -456,5 +463,6 @@ export default function useWallet() {
     initializeProofWallet,
     getNonce,
     loadTransactions,
+    destroySocket,
   };
 }

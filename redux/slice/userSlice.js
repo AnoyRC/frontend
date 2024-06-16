@@ -11,6 +11,7 @@ const userSlice = createSlice({
     gasCredit: 0,
     isDeployed: true,
     history: null,
+    wsProvider: null,
   },
 
   reducers: {
@@ -41,6 +42,10 @@ const userSlice = createSlice({
     setHistory: (state, action) => {
       state.history = action.payload;
     },
+
+    setWsProvider: (state, action) => {
+      state.wsProvider = action.payload;
+    },
   },
 });
 
@@ -52,6 +57,7 @@ export const {
   setGasCredit,
   setDeployed,
   setHistory,
+  setWsProvider,
 } = userSlice.actions;
 
 export default userSlice.reducer;
